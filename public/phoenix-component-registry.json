@@ -1,0 +1,409 @@
+{
+  "projectId": "bf769865-c267-4920-85fa-380afb2d0894",
+  "userId": "hw8u8FgXeBcQGo9CRezTWmEivX92",
+  "version": "1.0.0",
+  "generatedAt": "2025-09-13T19:04:09.459Z",
+  "components": {
+    "phoenix-1757790249442": {
+      "phoenixId": "phoenix-1757790249442",
+      "componentName": "Error",
+      "filePath": "src/app/error.tsx",
+      "lineNumber": 5,
+      "columnNumber": 15,
+      "sourceCode": "export default function Error() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center\">\n      <div className=\"text-center\">\n        <h1 className=\"text-4xl font-bold mb-4\">500 - Server Error</h1>\n        <p className=\"text-xl mb-4\">Something went wrong. Please try again later.</p>\n        <a href=\"/\" className=\"text-blue-500 hover:text-blue-700 underline\">\n          Return to Home\n        </a>\n      </div>\n    </div>\n  );\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "moderate"
+      }
+    },
+    "phoenix-1757790249443": {
+      "phoenixId": "phoenix-1757790249443",
+      "componentName": "Feed",
+      "filePath": "src/app/feed/page.tsx",
+      "lineNumber": 87,
+      "columnNumber": 15,
+      "sourceCode": "export default function Feed() {\n  const [posts, setPosts] = useState<Post[]>(mockPosts);\n  const [newPost, setNewPost] = useState(\"\");\n\n  const handleLike = (postId: string) => {\n    setPosts(posts.map(post => \n      post.id === postId \n        ? { \n            ...post, \n            isLiked: !post.isLiked,\n            likes: post.isLiked ? post.likes - 1 : post.likes + 1\n          }\n        : post\n    ));\n  };\n\n  const handleShare = (postId: string) => {\n    setPosts(posts.map(post => \n      post.id === postId \n        ? { ...post, shares: post.shares + 1 }\n        : post\n    ));\n  };\n\n  const createPost = () => {\n    if (!newPost.trim()) return;\n    \n    const post: Post = {\n      id: Date.now().toString(),\n      author: {\n        name: \"You\",\n        avatar: \"/placeholder.svg\",\n        username: \"you\"\n      },\n      content: newPost,\n      timestamp: \"just now\",\n      likes: 0,\n      comments: 0,\n      shares: 0,\n      isLiked: false\n    };\n    \n    setPosts([post, ...posts]);\n    setNewPost(\"\");\n  };\n\n  return (\n    <div className=\"min-h-screen bg-gray-50 dark:bg-gray-900\">\n      {/* Header */}\n      <header className=\"sticky top-0 z-50 border-b bg-white/95 backdrop-blur-sm dark:bg-gray-900/95\">\n        <div className=\"container mx-auto px-4 py-3\">\n          <div className=\"flex items-center justify-between\">\n            <div className=\"flex items-center space-x-2\">\n              <Globe className=\"h-8 w-8 text-blue-600\" />\n              <h1 className=\"text-2xl font-bold text-blue-600 dark:text-blue-400\">Ronim</h1>\n            </div>\n            \n            <div className=\"flex-1 max-w-md mx-8\">\n              <div className=\"relative\">\n                <Search className=\"absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4\" />\n                <Input \n                  placeholder=\"Search Ronim\" \n                  className=\"pl-10\"\n                />\n              </div>\n            </div>\n            \n            <div className=\"flex items-center space-x-4\">\n              <Button variant=\"ghost\" size=\"icon\">\n                <Bell className=\"h-5 w-5\" />\n              </Button>\n              <Button variant=\"ghost\" size=\"icon\">\n                <Settings className=\"h-5 w-5\" />\n              </Button>\n              <Avatar>\n                <AvatarImage src=\"/placeholder.svg\" />\n                <AvatarFallback>You</AvatarFallback>\n              </Avatar>\n            </div>\n          </div>\n        </div>\n      </header>\n\n      <div className=\"container mx-auto px-4 py-6 max-w-2xl\">\n        {/* Create Post */}\n        <Card className=\"mb-6\">\n          <CardHeader>\n            <div className=\"flex items-center space-x-3\">\n              <Avatar>\n                <AvatarImage src=\"/placeholder.svg\" />\n                <AvatarFallback>You</AvatarFallback>\n              </Avatar>\n              <Textarea\n                placeholder=\"What's on your mind?\"\n                value={newPost}\n                onChange={(e) => setNewPost(e.target.value)}\n                className=\"flex-1 min-h-[50px] resize-none border-0 focus:ring-0\"\n              />\n            </div>\n          </CardHeader>\n          <Separator />\n          <CardContent className=\"pt-3\">\n            <div className=\"flex items-center justify-between\">\n              <div className=\"flex items-center space-x-4\">\n                <Button variant=\"ghost\" size=\"sm\" className=\"text-gray-600\">\n                  <ImageIcon className=\"h-4 w-4 mr-2\" />\n                  Photo\n                </Button>\n                <Button variant=\"ghost\" size=\"sm\" className=\"text-gray-600\">\n                  <Video className=\"h-4 w-4 mr-2\" />\n                  Video\n                </Button>\n              </div>\n              <Button onClick={createPost} disabled={!newPost.trim()}>\n                Post\n              </Button>\n            </div>\n          </CardContent>\n        </Card>\n\n        {/* Posts Feed */}\n        <div className=\"space-y-6\">\n          {posts.map((post) => (\n            <Card key={post.id}>\n              <CardHeader>\n                <div className=\"flex items-center justify-between\">\n                  <div className=\"flex items-center space-x-3\">\n                    <Avatar>\n                      <AvatarImage src={post.author.avatar} />\n                      <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>\n                    </Avatar>\n                    <div>\n                      <p className=\"font-semibold text-sm\">{post.author.name}</p>\n                      <p className=\"text-gray-500 text-xs\">@{post.author.username} · {post.timestamp}</p>\n                    </div>\n                  </div>\n                  <Button variant=\"ghost\" size=\"icon\">\n                    <MoreHorizontal className=\"h-4 w-4\" />\n                  </Button>\n                </div>\n              </CardHeader>\n              \n              <CardContent>\n                <p className=\"text-gray-900 dark:text-gray-100 mb-3\">\n                  {post.content}\n                </p>\n                \n                {post.image && (\n                  <div className=\"mb-4 rounded-lg overflow-hidden\">\n                    <img \n                      src={post.image} \n                      alt=\"Post image\"\n                      className=\"w-full h-64 object-cover\"\n                    />\n                  </div>\n                )}\n                \n                <Separator className=\"my-3\" />\n                \n                <div className=\"flex items-center justify-between\">\n                  <Button \n                    variant=\"ghost\" \n                    size=\"sm\"\n                    onClick={() => handleLike(post.id)}\n                    className={post.isLiked ? \"text-red-600\" : \"text-gray-600\"}\n                  >\n                    <Heart className={`h-4 w-4 mr-2 ${post.isLiked ? \"fill-current\" : \"\"}`} />\n                    {post.likes}\n                  </Button>\n                  \n                  <Button variant=\"ghost\" size=\"sm\" className=\"text-gray-600\">\n                    <MessageCircle className=\"h-4 w-4 mr-2\" />\n                    {post.comments}\n                  </Button>\n                  \n                  <Button \n                    variant=\"ghost\" \n                    size=\"sm\" \n                    className=\"text-gray-600\"\n                    onClick={() => handleShare(post.id)}\n                  >\n                    <Share2 className=\"h-4 w-4 mr-2\" />\n                    {post.shares}\n                  </Button>\n                </div>\n              </CardContent>\n            </Card>\n          ))}\n        </div>\n      </div>\n    </div>\n  );\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change",
+        "careful-modification",
+        "test-thoroughly",
+        "state-management"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "hooks": [
+          "useState",
+          "useState"
+        ],
+        "complexity": "complex"
+      }
+    },
+    "phoenix-1757790249444": {
+      "phoenixId": "phoenix-1757790249444",
+      "componentName": "GlobalError",
+      "filePath": "src/app/global-error.tsx",
+      "lineNumber": 5,
+      "columnNumber": 15,
+      "sourceCode": "export default function GlobalError({\n  error,\n  reset,\n}: {\n  error: Error & { digest?: string }\n  reset: () => void\n}) {\n  return (\n    <html>\n      <body>\n        <div style={{\n          minHeight: '100vh',\n          display: 'flex',\n          alignItems: 'center',\n          justifyContent: 'center',\n          padding: '2rem',\n          fontFamily: 'system-ui, sans-serif'\n        }}>\n          <div style={{ textAlign: 'center', maxWidth: '500px' }}>\n            <h1 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#dc2626' }}>\n              Something went wrong!\n            </h1>\n            <p style={{ fontSize: '1.1rem', marginBottom: '2rem', color: '#6b7280' }}>\n              The application encountered an unexpected error. This is likely temporary.\n            </p>\n            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>\n              <button\n                onClick={reset}\n                style={{\n                  padding: '0.75rem 1.5rem',\n                  backgroundColor: '#3b82f6',\n                  color: 'white',\n                  border: 'none',\n                  borderRadius: '0.5rem',\n                  cursor: 'pointer',\n                  fontSize: '1rem'\n                }}\n              >\n                Try Again\n              </button>\n              <button\n                onClick={() => window.location.href = '/'}\n                style={{\n                  padding: '0.75rem 1.5rem',\n                  backgroundColor: '#6b7280',\n                  color: 'white',\n                  border: 'none',\n                  borderRadius: '0.5rem',\n                  cursor: 'pointer',\n                  fontSize: '1rem'\n                }}\n              >\n                Go Home\n              </button>\n            </div>\n            {process.env.NODE_ENV === 'development' && (\n              <details style={{ marginTop: '2rem', textAlign: 'left' }}>\n                <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>\n                  Error Details (Development Only)\n                </summary>\n                <pre style={{ \n                  marginTop: '1rem', \n                  padding: '1rem', \n                  backgroundColor: '#f3f4f6', \n                  borderRadius: '0.5rem',\n                  fontSize: '0.875rem',\n                  overflow: 'auto'\n                }}>\n                  {error.message}\n                  {error.stack && '\\n\\nStack trace:\\n' + error.stack}\n                </pre>\n              </details>\n            )}\n          </div>\n        </div>\n      </body>\n    </html>\n  )\n}",
+      "props": [
+        {
+          "name": "error",
+          "type": "unknown",
+          "required": false
+        },
+        {
+          "name": "reset",
+          "type": "unknown",
+          "required": false
+        }
+      ],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change",
+        "careful-modification",
+        "test-thoroughly"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "complex"
+      }
+    },
+    "phoenix-1757790249445": {
+      "phoenixId": "phoenix-1757790249445",
+      "componentName": "RootLayout",
+      "filePath": "src/app/layout.tsx",
+      "lineNumber": 25,
+      "columnNumber": 15,
+      "sourceCode": "export default function RootLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return (\n    <html lang=\"en\" suppressHydrationWarning>\n      <body\n        className={`${geistSans.variable} ${geistMono.variable} antialiased`}\n      >\n        <QueryProvider>\n          <ThemeProvider\n            attribute=\"class\"\n            defaultTheme=\"system\"\n            enableSystem\n            disableTransitionOnChange\n          >\n            <TooltipProvider>\n              {children}\n              <Toaster />\n              <Sonner />\n            </TooltipProvider>\n          </ThemeProvider>\n        </QueryProvider>\n      </body>\n    </html>\n  );\n}",
+      "props": [
+        {
+          "name": "children",
+          "type": "unknown",
+          "required": false
+        }
+      ],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "moderate"
+      }
+    },
+    "phoenix-1757790249446": {
+      "phoenixId": "phoenix-1757790249446",
+      "componentName": "Loading",
+      "filePath": "src/app/loading.tsx",
+      "lineNumber": 1,
+      "columnNumber": 15,
+      "sourceCode": "export default function Loading() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center\">\n      <div className=\"text-center\">\n        <p className=\"text-xl\">Loading...</p>\n      </div>\n    </div>\n  );\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "moderate"
+      }
+    },
+    "phoenix-1757790249447": {
+      "phoenixId": "phoenix-1757790249447",
+      "componentName": "Messages",
+      "filePath": "src/app/messages/page.tsx",
+      "lineNumber": 120,
+      "columnNumber": 15,
+      "sourceCode": "export default function Messages() {\n  const [selectedConversation, setSelectedConversation] = useState<Conversation>(conversations[0]);\n  const [messages, setMessages] = useState<Message[]>(initialMessages);\n  const [newMessage, setNewMessage] = useState(\"\");\n  const [searchQuery, setSearchQuery] = useState(\"\");\n\n  const sendMessage = () => {\n    if (!newMessage.trim()) return;\n\n    const message: Message = {\n      id: Date.now().toString(),\n      text: newMessage,\n      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),\n      isFromUser: true\n    };\n\n    setMessages([...messages, message]);\n    setNewMessage(\"\");\n  };\n\n  const handleKeyPress = (e: React.KeyboardEvent) => {\n    if (e.key === 'Enter' && !e.shiftKey) {\n      e.preventDefault();\n      sendMessage();\n    }\n  };\n\n  const filteredConversations = conversations.filter(conv =>\n    conv.name.toLowerCase().includes(searchQuery.toLowerCase())\n  );\n\n  return (\n    <div className=\"min-h-screen bg-gray-50 dark:bg-gray-900\">\n      {/* Header */}\n      <header className=\"sticky top-0 z-50 border-b bg-white/95 backdrop-blur-sm dark:bg-gray-900/95\">\n        <div className=\"container mx-auto px-4 py-3\">\n          <div className=\"flex items-center space-x-2\">\n            <Globe className=\"h-8 w-8 text-blue-600\" />\n            <h1 className=\"text-2xl font-bold text-blue-600 dark:text-blue-400\">Ronim</h1>\n          </div>\n        </div>\n      </header>\n\n      <div className=\"flex h-[calc(100vh-73px)]\">\n        {/* Conversations List */}\n        <div className=\"w-80 border-r bg-white dark:bg-gray-900 flex flex-col\">\n          <div className=\"p-4 border-b\">\n            <h2 className=\"text-xl font-semibold mb-3\">Messages</h2>\n            <div className=\"relative\">\n              <Search className=\"absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4\" />\n              <Input \n                placeholder=\"Search conversations\" \n                className=\"pl-10\"\n                value={searchQuery}\n                onChange={(e) => setSearchQuery(e.target.value)}\n              />\n            </div>\n          </div>\n          \n          <ScrollArea className=\"flex-1\">\n            <div className=\"p-2\">\n              {filteredConversations.map((conversation) => (\n                <div\n                  key={conversation.id}\n                  onClick={() => setSelectedConversation(conversation)}\n                  className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors ${\n                    selectedConversation.id === conversation.id \n                      ? 'bg-blue-50 dark:bg-blue-900/20' \n                      : 'hover:bg-gray-50 dark:hover:bg-gray-800'\n                  }`}\n                >\n                  <div className=\"relative\">\n                    <Avatar>\n                      <AvatarImage src={conversation.avatar} />\n                      <AvatarFallback>{conversation.name.charAt(0)}</AvatarFallback>\n                    </Avatar>\n                    {conversation.isOnline && (\n                      <div className=\"absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full\"></div>\n                    )}\n                  </div>\n                  \n                  <div className=\"flex-1 min-w-0\">\n                    <div className=\"flex items-center justify-between\">\n                      <p className=\"font-medium text-sm truncate\">{conversation.name}</p>\n                      <span className=\"text-xs text-gray-500\">{conversation.timestamp}</span>\n                    </div>\n                    <p className=\"text-sm text-gray-600 dark:text-gray-300 truncate\">\n                      {conversation.lastMessage}\n                    </p>\n                  </div>\n                  \n                  {conversation.unreadCount > 0 && (\n                    <Badge variant=\"default\" className=\"bg-blue-600 hover:bg-blue-700\">\n                      {conversation.unreadCount}\n                    </Badge>\n                  )}\n                </div>\n              ))}\n            </div>\n          </ScrollArea>\n        </div>\n\n        {/* Chat Area */}\n        <div className=\"flex-1 flex flex-col bg-white dark:bg-gray-900\">\n          {/* Chat Header */}\n          <div className=\"flex items-center justify-between p-4 border-b\">\n            <div className=\"flex items-center space-x-3\">\n              <div className=\"relative\">\n                <Avatar>\n                  <AvatarImage src={selectedConversation.avatar} />\n                  <AvatarFallback>{selectedConversation.name.charAt(0)}</AvatarFallback>\n                </Avatar>\n                {selectedConversation.isOnline && (\n                  <div className=\"absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full\"></div>\n                )}\n              </div>\n              <div>\n                <p className=\"font-medium\">{selectedConversation.name}</p>\n                <p className=\"text-sm text-gray-500\">\n                  {selectedConversation.isOnline ? \"Active now\" : \"Last seen recently\"}\n                </p>\n              </div>\n            </div>\n            \n            <div className=\"flex items-center space-x-2\">\n              <Button variant=\"ghost\" size=\"icon\">\n                <Phone className=\"h-5 w-5\" />\n              </Button>\n              <Button variant=\"ghost\" size=\"icon\">\n                <Video className=\"h-5 w-5\" />\n              </Button>\n              <Button variant=\"ghost\" size=\"icon\">\n                <Info className=\"h-5 w-5\" />\n              </Button>\n            </div>\n          </div>\n\n          {/* Messages */}\n          <ScrollArea className=\"flex-1 p-4\">\n            <div className=\"space-y-4\">\n              {messages.map((message) => (\n                <div\n                  key={message.id}\n                  className={`flex ${message.isFromUser ? 'justify-end' : 'justify-start'}`}\n                >\n                  <div className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${\n                    message.isFromUser ? 'flex-row-reverse space-x-reverse' : ''\n                  }`}>\n                    {!message.isFromUser && (\n                      <Avatar className=\"w-6 h-6\">\n                        <AvatarImage src={selectedConversation.avatar} />\n                        <AvatarFallback className=\"text-xs\">\n                          {selectedConversation.name.charAt(0)}\n                        </AvatarFallback>\n                      </Avatar>\n                    )}\n                    <div\n                      className={`px-4 py-2 rounded-2xl ${\n                        message.isFromUser\n                          ? 'bg-blue-600 text-white'\n                          : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'\n                      }`}\n                    >\n                      <p className=\"text-sm\">{message.text}</p>\n                    </div>\n                  </div>\n                </div>\n              ))}\n            </div>\n          </ScrollArea>\n\n          {/* Message Input */}\n          <div className=\"p-4 border-t\">\n            <div className=\"flex items-center space-x-2\">\n              <Button variant=\"ghost\" size=\"icon\">\n                <Paperclip className=\"h-5 w-5\" />\n              </Button>\n              <div className=\"flex-1 relative\">\n                <Input\n                  placeholder={`Message ${selectedConversation.name}...`}\n                  value={newMessage}\n                  onChange={(e) => setNewMessage(e.target.value)}\n                  onKeyPress={handleKeyPress}\n                  className=\"pr-10\"\n                />\n                <Button \n                  variant=\"ghost\" \n                  size=\"icon\"\n                  className=\"absolute right-1 top-1/2 transform -translate-y-1/2\"\n                >\n                  <Smile className=\"h-4 w-4\" />\n                </Button>\n              </div>\n              <Button onClick={sendMessage} disabled={!newMessage.trim()}>\n                <Send className=\"h-4 w-4\" />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change",
+        "careful-modification",
+        "test-thoroughly",
+        "state-management"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "hooks": [
+          "useState",
+          "useState",
+          "useState",
+          "useState"
+        ],
+        "complexity": "complex"
+      }
+    },
+    "phoenix-1757790249448": {
+      "phoenixId": "phoenix-1757790249448",
+      "componentName": "NotFound",
+      "filePath": "src/app/not-found.tsx",
+      "lineNumber": 3,
+      "columnNumber": 15,
+      "sourceCode": "export default function NotFound() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center\">\n      <div className=\"text-center\">\n        <h1 className=\"text-4xl font-bold mb-4\">404 - Page Not Found</h1>\n        <p className=\"text-xl mb-4\">The page you are looking for does not exist.</p>\n        <a href=\"/\" className=\"text-blue-500 hover:text-blue-700 underline\">\n          Return to Home\n        </a>\n      </div>\n    </div>\n  );\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "moderate"
+      }
+    },
+    "phoenix-1757790249449": {
+      "phoenixId": "phoenix-1757790249449",
+      "componentName": "Index",
+      "filePath": "src/app/page.tsx",
+      "lineNumber": 14,
+      "columnNumber": 15,
+      "sourceCode": "export default function Index() {\n  const [loginForm, setLoginForm] = useState({ email: \"\", password: \"\" });\n  const [registerForm, setRegisterForm] = useState({ name: \"\", email: \"\", password: \"\" });\n\n  return (\n    <div className=\"min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800\">\n      {/* Header */}\n      <header className=\"border-b bg-white/80 backdrop-blur-sm dark:bg-gray-900/80\">\n        <div className=\"container mx-auto px-4 py-4 flex items-center justify-between\">\n          <div className=\"flex items-center space-x-2\">\n            <Globe className=\"h-8 w-8 text-blue-600\" />\n            <h1 className=\"text-2xl font-bold text-blue-600 dark:text-blue-400\">Ronim</h1>\n          </div>\n          <nav className=\"hidden md:flex items-center space-x-6\">\n            <Link href=\"#features\" className=\"text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400\">\n              Features\n            </Link>\n            <Link href=\"#about\" className=\"text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400\">\n              About\n            </Link>\n          </nav>\n        </div>\n      </header>\n\n      {/* Hero Section */}\n      <main className=\"container mx-auto px-4 py-12\">\n        <div className=\"grid lg:grid-cols-2 gap-12 items-center\">\n          {/* Left Side - Welcome Content */}\n          <div className=\"space-y-6\">\n            <h2 className=\"text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white\">\n              Connect with friends and the world around you on \n              <span className=\"text-blue-600 dark:text-blue-400\"> Ronim</span>\n            </h2>\n            <p className=\"text-xl text-gray-600 dark:text-gray-300\">\n              Share moments, discover new content, and stay connected with the people who matter most to you.\n            </p>\n            <div className=\"flex flex-wrap gap-6 text-sm text-gray-500 dark:text-gray-400\">\n              <div className=\"flex items-center gap-2\">\n                <Users className=\"h-4 w-4\" />\n                <span>Connect with friends</span>\n              </div>\n              <div className=\"flex items-center gap-2\">\n                <MessageCircle className=\"h-4 w-4\" />\n                <span>Share your thoughts</span>\n              </div>\n              <div className=\"flex items-center gap-2\">\n                <Heart className=\"h-4 w-4\" />\n                <span>Discover content you love</span>\n              </div>\n            </div>\n          </div>\n\n          {/* Right Side - Auth Forms */}\n          <Card className=\"w-full max-w-md mx-auto\">\n            <CardHeader>\n              <CardTitle>Join Ronim</CardTitle>\n              <CardDescription>Sign up or log in to get started</CardDescription>\n            </CardHeader>\n            <CardContent>\n              <Tabs defaultValue=\"login\" className=\"w-full\">\n                <TabsList className=\"grid w-full grid-cols-2\">\n                  <TabsTrigger value=\"login\">Log In</TabsTrigger>\n                  <TabsTrigger value=\"register\">Sign Up</TabsTrigger>\n                </TabsList>\n                \n                <TabsContent value=\"login\" className=\"space-y-4\">\n                  <div className=\"space-y-2\">\n                    <Label htmlFor=\"login-email\">Email</Label>\n                    <Input\n                      id=\"login-email\"\n                      type=\"email\"\n                      placeholder=\"Enter your email\"\n                      value={loginForm.email}\n                      onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}\n                    />\n                  </div>\n                  <div className=\"space-y-2\">\n                    <Label htmlFor=\"login-password\">Password</Label>\n                    <Input\n                      id=\"login-password\"\n                      type=\"password\"\n                      placeholder=\"Enter your password\"\n                      value={loginForm.password}\n                      onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}\n                    />\n                  </div>\n                  <Button className=\"w-full\" size=\"lg\">\n                    Log In\n                  </Button>\n                  <div className=\"text-center\">\n                    <Link href=\"#\" className=\"text-sm text-blue-600 hover:underline dark:text-blue-400\">\n                      Forgot your password?\n                    </Link>\n                  </div>\n                </TabsContent>\n\n                <TabsContent value=\"register\" className=\"space-y-4\">\n                  <div className=\"space-y-2\">\n                    <Label htmlFor=\"register-name\">Full Name</Label>\n                    <Input\n                      id=\"register-name\"\n                      type=\"text\"\n                      placeholder=\"Enter your full name\"\n                      value={registerForm.name}\n                      onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}\n                    />\n                  </div>\n                  <div className=\"space-y-2\">\n                    <Label htmlFor=\"register-email\">Email</Label>\n                    <Input\n                      id=\"register-email\"\n                      type=\"email\"\n                      placeholder=\"Enter your email\"\n                      value={registerForm.email}\n                      onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}\n                    />\n                  </div>\n                  <div className=\"space-y-2\">\n                    <Label htmlFor=\"register-password\">Password</Label>\n                    <Input\n                      id=\"register-password\"\n                      type=\"password\"\n                      placeholder=\"Create a password\"\n                      value={registerForm.password}\n                      onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}\n                    />\n                  </div>\n                  <Button className=\"w-full\" size=\"lg\">\n                    Create Account\n                  </Button>\n                  <p className=\"text-xs text-center text-gray-500 dark:text-gray-400\">\n                    By signing up, you agree to our Terms of Service and Privacy Policy.\n                  </p>\n                </TabsContent>\n              </Tabs>\n            </CardContent>\n          </Card>\n        </div>\n\n        {/* Features Section */}\n        <section id=\"features\" className=\"py-16 mt-16\">\n          <div className=\"text-center mb-12\">\n            <h3 className=\"text-3xl font-bold text-gray-900 dark:text-white mb-4\">\n              Everything you need to stay connected\n            </h3>\n            <p className=\"text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto\">\n              Ronim brings people together with powerful social features designed for meaningful connections.\n            </p>\n          </div>\n          \n          <div className=\"grid md:grid-cols-2 lg:grid-cols-4 gap-6\">\n            <Card>\n              <CardHeader className=\"text-center\">\n                <Users className=\"h-12 w-12 text-blue-600 dark:text-blue-400 mx-auto mb-2\" />\n                <CardTitle>Social Network</CardTitle>\n              </CardHeader>\n              <CardContent>\n                <p className=\"text-sm text-gray-600 dark:text-gray-300 text-center\">\n                  Build your network and connect with friends, family, and new people who share your interests.\n                </p>\n              </CardContent>\n            </Card>\n\n            <Card>\n              <CardHeader className=\"text-center\">\n                <MessageCircle className=\"h-12 w-12 text-blue-600 dark:text-blue-400 mx-auto mb-2\" />\n                <CardTitle>Real-time Chat</CardTitle>\n              </CardHeader>\n              <CardContent>\n                <p className=\"text-sm text-gray-600 dark:text-gray-300 text-center\">\n                  Instant messaging with friends, group chats, and real-time notifications to stay in touch.\n                </p>\n              </CardContent>\n            </Card>\n\n            <Card>\n              <CardHeader className=\"text-center\">\n                <Heart className=\"h-12 w-12 text-blue-600 dark:text-blue-400 mx-auto mb-2\" />\n                <CardTitle>Content Feed</CardTitle>\n              </CardHeader>\n              <CardContent>\n                <p className=\"text-sm text-gray-600 dark:text-gray-300 text-center\">\n                  Personalized timeline with posts from friends, trending content, and intelligent recommendations.\n                </p>\n              </CardContent>\n            </Card>\n\n            <Card>\n              <CardHeader className=\"text-center\">\n                <Share2 className=\"h-12 w-12 text-blue-600 dark:text-blue-400 mx-auto mb-2\" />\n                <CardTitle>Share & Discover</CardTitle>\n              </CardHeader>\n              <CardContent>\n                <p className=\"text-sm text-gray-600 dark:text-gray-300 text-center\">\n                  Share photos, videos, thoughts, and discover amazing content from your network.\n                </p>\n              </CardContent>\n            </Card>\n          </div>\n        </section>\n      </main>\n\n      {/* Footer */}\n      <footer className=\"border-t bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm mt-16\">\n        <div className=\"container mx-auto px-4 py-8 text-center text-gray-600 dark:text-gray-400\">\n          <p>&copy; 2025 Ronim. Built with Next.js and love.</p>\n        </div>\n      </footer>\n    </div>\n  );\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change",
+        "careful-modification",
+        "test-thoroughly",
+        "state-management"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "hooks": [
+          "useState",
+          "useState"
+        ],
+        "complexity": "complex"
+      }
+    },
+    "phoenix-1757790249450": {
+      "phoenixId": "phoenix-1757790249450",
+      "componentName": "Profile",
+      "filePath": "src/app/profile/page.tsx",
+      "lineNumber": 96,
+      "columnNumber": 15,
+      "sourceCode": "export default function Profile() {\n  const [posts, setPosts] = useState<Post[]>(userPosts);\n  const [isFollowing, setIsFollowing] = useState(false);\n\n  const handleLike = (postId: string) => {\n    setPosts(posts.map(post => \n      post.id === postId \n        ? { \n            ...post, \n            isLiked: !post.isLiked,\n            likes: post.isLiked ? post.likes - 1 : post.likes + 1\n          }\n        : post\n    ));\n  };\n\n  const handleFollow = () => {\n    setIsFollowing(!isFollowing);\n  };\n\n  const formatNumber = (num: number) => {\n    if (num >= 1000) {\n      return (num / 1000).toFixed(1) + 'K';\n    }\n    return num.toString();\n  };\n\n  return (\n    <div className=\"min-h-screen bg-gray-50 dark:bg-gray-900\">\n      {/* Header */}\n      <header className=\"sticky top-0 z-50 border-b bg-white/95 backdrop-blur-sm dark:bg-gray-900/95\">\n        <div className=\"container mx-auto px-4 py-3\">\n          <div className=\"flex items-center justify-between\">\n            <div className=\"flex items-center space-x-2\">\n              <Globe className=\"h-8 w-8 text-blue-600\" />\n              <h1 className=\"text-2xl font-bold text-blue-600 dark:text-blue-400\">Ronim</h1>\n            </div>\n            <Button variant=\"ghost\" size=\"icon\">\n              <Settings className=\"h-5 w-5\" />\n            </Button>\n          </div>\n        </div>\n      </header>\n\n      <div className=\"container mx-auto px-4 max-w-4xl\">\n        {/* Cover Image & Profile Info */}\n        <div className=\"relative\">\n          <div className=\"h-48 md:h-64 bg-gradient-to-r from-blue-400 to-purple-500 rounded-b-lg\">\n            <img \n              src={userProfile.coverImage} \n              alt=\"Cover\" \n              className=\"w-full h-full object-cover rounded-b-lg\"\n            />\n            <Button \n              variant=\"secondary\" \n              size=\"sm\" \n              className=\"absolute top-4 right-4\"\n            >\n              <Camera className=\"h-4 w-4 mr-2\" />\n              Edit Cover\n            </Button>\n          </div>\n          \n          <div className=\"relative px-4 pb-4\">\n            <div className=\"flex flex-col md:flex-row md:items-end md:justify-between -mt-16 md:-mt-20\">\n              <div className=\"flex flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-6\">\n                <div className=\"relative\">\n                  <Avatar className=\"w-32 h-32 border-4 border-white dark:border-gray-900\">\n                    <AvatarImage src={userProfile.avatar} />\n                    <AvatarFallback className=\"text-2xl\">\n                      {userProfile.name.split(' ').map(n => n[0]).join('')}\n                    </AvatarFallback>\n                  </Avatar>\n                  <Button \n                    variant=\"secondary\" \n                    size=\"icon\" \n                    className=\"absolute bottom-2 right-2 rounded-full w-8 h-8\"\n                  >\n                    <Camera className=\"h-4 w-4\" />\n                  </Button>\n                </div>\n                \n                <div className=\"space-y-2\">\n                  <div className=\"flex items-center space-x-2\">\n                    <h2 className=\"text-2xl md:text-3xl font-bold text-gray-900 dark:text-white\">\n                      {userProfile.name}\n                    </h2>\n                    {userProfile.verified && (\n                      <Badge variant=\"secondary\" className=\"bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200\">\n                        Verified\n                      </Badge>\n                    )}\n                  </div>\n                  <p className=\"text-gray-600 dark:text-gray-300\">@{userProfile.username}</p>\n                </div>\n              </div>\n              \n              <div className=\"flex space-x-3 mt-4 md:mt-0\">\n                <Button \n                  variant={isFollowing ? \"outline\" : \"default\"}\n                  onClick={handleFollow}\n                >\n                  <Users className=\"h-4 w-4 mr-2\" />\n                  {isFollowing ? \"Following\" : \"Follow\"}\n                </Button>\n                <Button variant=\"outline\">\n                  <MessageCircle className=\"h-4 w-4 mr-2\" />\n                  Message\n                </Button>\n              </div>\n            </div>\n            \n            <div className=\"mt-6 space-y-4\">\n              <p className=\"text-gray-900 dark:text-gray-100 max-w-2xl\">\n                {userProfile.bio}\n              </p>\n              \n              <div className=\"flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300\">\n                <div className=\"flex items-center space-x-1\">\n                  <MapPin className=\"h-4 w-4\" />\n                  <span>{userProfile.location}</span>\n                </div>\n                <div className=\"flex items-center space-x-1\">\n                  <LinkIcon className=\"h-4 w-4\" />\n                  <a href={`https://${userProfile.website}`} className=\"text-blue-600 hover:underline\">\n                    {userProfile.website}\n                  </a>\n                </div>\n                <div className=\"flex items-center space-x-1\">\n                  <Calendar className=\"h-4 w-4\" />\n                  <span>Joined {userProfile.joinedDate}</span>\n                </div>\n              </div>\n              \n              <div className=\"flex space-x-6 text-sm\">\n                <div>\n                  <span className=\"font-bold text-gray-900 dark:text-white\">{formatNumber(userProfile.following)}</span>\n                  <span className=\"text-gray-600 dark:text-gray-300 ml-1\">Following</span>\n                </div>\n                <div>\n                  <span className=\"font-bold text-gray-900 dark:text-white\">{formatNumber(userProfile.followers)}</span>\n                  <span className=\"text-gray-600 dark:text-gray-300 ml-1\">Followers</span>\n                </div>\n                <div>\n                  <span className=\"font-bold text-gray-900 dark:text-white\">{userProfile.posts}</span>\n                  <span className=\"text-gray-600 dark:text-gray-300 ml-1\">Posts</span>\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        {/* Content Tabs */}\n        <div className=\"mt-8\">\n          <Tabs defaultValue=\"posts\" className=\"w-full\">\n            <TabsList className=\"w-full justify-start\">\n              <TabsTrigger value=\"posts\">Posts</TabsTrigger>\n              <TabsTrigger value=\"media\">Photos & Videos</TabsTrigger>\n              <TabsTrigger value=\"likes\">Likes</TabsTrigger>\n            </TabsList>\n            \n            <TabsContent value=\"posts\" className=\"mt-6 space-y-6\">\n              {posts.map((post) => (\n                <Card key={post.id}>\n                  <CardHeader>\n                    <div className=\"flex items-center space-x-3\">\n                      <Avatar>\n                        <AvatarImage src={userProfile.avatar} />\n                        <AvatarFallback>{userProfile.name.charAt(0)}</AvatarFallback>\n                      </Avatar>\n                      <div>\n                        <p className=\"font-semibold text-sm\">{userProfile.name}</p>\n                        <p className=\"text-gray-500 text-xs\">@{userProfile.username} · {post.timestamp}</p>\n                      </div>\n                    </div>\n                  </CardHeader>\n                  \n                  <CardContent>\n                    <p className=\"text-gray-900 dark:text-gray-100 mb-3\">\n                      {post.content}\n                    </p>\n                    \n                    {post.image && (\n                      <div className=\"mb-4 rounded-lg overflow-hidden\">\n                        <img \n                          src={post.image} \n                          alt=\"Post image\"\n                          className=\"w-full h-64 object-cover\"\n                        />\n                      </div>\n                    )}\n                    \n                    <Separator className=\"my-3\" />\n                    \n                    <div className=\"flex items-center justify-between\">\n                      <Button \n                        variant=\"ghost\" \n                        size=\"sm\"\n                        onClick={() => handleLike(post.id)}\n                        className={post.isLiked ? \"text-red-600\" : \"text-gray-600\"}\n                      >\n                        <Heart className={`h-4 w-4 mr-2 ${post.isLiked ? \"fill-current\" : \"\"}`} />\n                        {post.likes}\n                      </Button>\n                      \n                      <Button variant=\"ghost\" size=\"sm\" className=\"text-gray-600\">\n                        <MessageCircle className=\"h-4 w-4 mr-2\" />\n                        {post.comments}\n                      </Button>\n                      \n                      <Button variant=\"ghost\" size=\"sm\" className=\"text-gray-600\">\n                        <Share2 className=\"h-4 w-4 mr-2\" />\n                        {post.shares}\n                      </Button>\n                    </div>\n                  </CardContent>\n                </Card>\n              ))}\n            </TabsContent>\n            \n            <TabsContent value=\"media\" className=\"mt-6\">\n              <div className=\"grid grid-cols-2 md:grid-cols-3 gap-4\">\n                {posts.filter(post => post.image).map((post) => (\n                  <div key={post.id} className=\"aspect-square rounded-lg overflow-hidden\">\n                    <img \n                      src={post.image} \n                      alt=\"Media\"\n                      className=\"w-full h-full object-cover hover:scale-105 transition-transform\"\n                    />\n                  </div>\n                ))}\n              </div>\n            </TabsContent>\n            \n            <TabsContent value=\"likes\" className=\"mt-6\">\n              <div className=\"text-center py-12\">\n                <Heart className=\"h-16 w-16 text-gray-300 mx-auto mb-4\" />\n                <p className=\"text-gray-500\">Liked posts will appear here</p>\n              </div>\n            </TabsContent>\n          </Tabs>\n        </div>\n      </div>\n    </div>\n  );\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change",
+        "careful-modification",
+        "test-thoroughly",
+        "state-management"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "hooks": [
+          "useState",
+          "useState"
+        ],
+        "complexity": "complex"
+      }
+    },
+    "phoenix-1757790249451": {
+      "phoenixId": "phoenix-1757790249451",
+      "componentName": "Navigation",
+      "filePath": "src/components/navigation.tsx",
+      "lineNumber": 23,
+      "columnNumber": 7,
+      "sourceCode": "export function Navigation() {\n  const pathname = usePathname();\n\n  return (\n    <header className=\"sticky top-0 z-50 border-b bg-white/95 backdrop-blur-sm dark:bg-gray-900/95\">\n      <div className=\"container mx-auto px-4 py-3\">\n        <div className=\"flex items-center justify-between\">\n          {/* Logo */}\n          <Link href=\"/\" className=\"flex items-center space-x-2\">\n            <Globe className=\"h-8 w-8 text-blue-600\" />\n            <h1 className=\"text-2xl font-bold text-blue-600 dark:text-blue-400\">Ronim</h1>\n          </Link>\n          \n          {/* Navigation Links - Desktop */}\n          <nav className=\"hidden md:flex items-center space-x-6\">\n            {navItems.map((item) => {\n              const Icon = item.icon;\n              const isActive = pathname === item.href;\n              \n              return (\n                <Link key={item.href} href={item.href}>\n                  <Button \n                    variant={isActive ? \"default\" : \"ghost\"} \n                    className=\"flex items-center space-x-2\"\n                  >\n                    <Icon className=\"h-4 w-4\" />\n                    <span>{item.label}</span>\n                  </Button>\n                </Link>\n              );\n            })}\n          </nav>\n          \n          {/* Right Side Actions */}\n          <div className=\"flex items-center space-x-2\">\n            <Button variant=\"ghost\" size=\"icon\">\n              <Search className=\"h-5 w-5\" />\n            </Button>\n            <Button variant=\"ghost\" size=\"icon\">\n              <Bell className=\"h-5 w-5\" />\n            </Button>\n            <Button variant=\"ghost\" size=\"icon\">\n              <Settings className=\"h-5 w-5\" />\n            </Button>\n          </div>\n        </div>\n        \n        {/* Mobile Navigation */}\n        <nav className=\"md:hidden flex justify-around pt-3 border-t mt-3\">\n          {navItems.map((item) => {\n            const Icon = item.icon;\n            const isActive = pathname === item.href;\n            \n            return (\n              <Link key={item.href} href={item.href}>\n                <Button \n                  variant={isActive ? \"default\" : \"ghost\"} \n                  size=\"sm\"\n                  className=\"flex flex-col items-center space-y-1 h-auto py-2\"\n                >\n                  <Icon className=\"h-4 w-4\" />\n                  <span className=\"text-xs\">{item.label}</span>\n                </Button>\n              </Link>\n            );\n          })}\n        </nav>\n      </div>\n    </header>\n  );\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change",
+        "careful-modification",
+        "test-thoroughly"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "hooks": [
+          "usePathname"
+        ],
+        "complexity": "complex"
+      }
+    },
+    "phoenix-1757790249452": {
+      "phoenixId": "phoenix-1757790249452",
+      "componentName": "QueryProvider",
+      "filePath": "src/components/query-provider.tsx",
+      "lineNumber": 6,
+      "columnNumber": 7,
+      "sourceCode": "export function QueryProvider({ children }: { children: React.ReactNode }) {\n  const [queryClient] = useState(() => new QueryClient())\n\n  return (\n    <QueryClientProvider client={queryClient}>\n      {children}\n    </QueryClientProvider>\n  )\n}",
+      "props": [
+        {
+          "name": "children",
+          "type": "unknown",
+          "required": false
+        }
+      ],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change",
+        "state-management"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "hooks": [
+          "useState"
+        ],
+        "complexity": "moderate"
+      }
+    },
+    "phoenix-1757790249453": {
+      "phoenixId": "phoenix-1757790249453",
+      "componentName": "ThemeProvider",
+      "filePath": "src/components/theme-provider.tsx",
+      "lineNumber": 6,
+      "columnNumber": 7,
+      "sourceCode": "export function ThemeProvider({\n  children,\n  ...props\n}: React.ComponentProps<typeof NextThemesProvider>) {\n  return <NextThemesProvider {...props}>{children}</NextThemesProvider>\n}",
+      "props": [
+        {
+          "name": "children",
+          "type": "unknown",
+          "required": false
+        }
+      ],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "simple"
+      }
+    },
+    "phoenix-1757790249454": {
+      "phoenixId": "phoenix-1757790249454",
+      "componentName": "Badge",
+      "filePath": "src/components/ui/badge.tsx",
+      "lineNumber": 30,
+      "columnNumber": 0,
+      "sourceCode": "function Badge({ className, variant, ...props }: BadgeProps) {\n  return (\n    <div className={cn(badgeVariants({ variant }), className)} {...props} />\n  )\n}",
+      "props": [
+        {
+          "name": "className",
+          "type": "unknown",
+          "required": false
+        },
+        {
+          "name": "variant",
+          "type": "unknown",
+          "required": false
+        }
+      ],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "moderate"
+      }
+    },
+    "phoenix-1757790249455": {
+      "phoenixId": "phoenix-1757790249455",
+      "componentName": "Calendar",
+      "filePath": "src/components/ui/calendar.tsx",
+      "lineNumber": 10,
+      "columnNumber": 0,
+      "sourceCode": "function Calendar({\n  className,\n  classNames,\n  showOutsideDays = true,\n  ...props\n}: CalendarProps) {\n  return (\n    <DayPicker\n      showOutsideDays={showOutsideDays}\n      className={cn(\"p-3\", className)}\n      classNames={{\n        months: \"flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0\",\n        month: \"space-y-4\",\n        caption: \"flex justify-center pt-1 relative items-center\",\n        caption_label: \"text-sm font-medium\",\n        nav: \"space-x-1 flex items-center\",\n        nav_button: cn(\n          buttonVariants({ variant: \"outline\" }),\n          \"h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100\"\n        ),\n        nav_button_previous: \"absolute left-1\",\n        nav_button_next: \"absolute right-1\",\n        table: \"w-full border-collapse space-y-1\",\n        head_row: \"flex\",\n        head_cell:\n          \"text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]\",\n        row: \"flex w-full mt-2\",\n        cell: \"h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20\",\n        day: cn(\n          buttonVariants({ variant: \"ghost\" }),\n          \"h-9 w-9 p-0 font-normal aria-selected:opacity-100\"\n        ),\n        day_range_end: \"day-range-end\",\n        day_selected:\n          \"bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground\",\n        day_today: \"bg-accent text-accent-foreground\",\n        day_outside:\n          \"day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30\",\n        day_disabled: \"text-muted-foreground opacity-50\",\n        day_range_middle:\n          \"aria-selected:bg-accent aria-selected:text-accent-foreground\",\n        day_hidden: \"invisible\",\n        ...classNames,\n      }}\n      components={{\n        Chevron: (props) => props.orientation === 'left' ? <ChevronLeft className=\"h-4 w-4\" /> : <ChevronRight className=\"h-4 w-4\" />,\n      }}\n      {...props}\n    />\n  );\n}",
+      "props": [
+        {
+          "name": "className",
+          "type": "unknown",
+          "required": false
+        },
+        {
+          "name": "classNames",
+          "type": "unknown",
+          "required": false
+        },
+        {
+          "name": "showOutsideDays",
+          "type": "unknown",
+          "required": false
+        }
+      ],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change",
+        "careful-modification",
+        "test-thoroughly"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "complex"
+      }
+    },
+    "phoenix-1757790249456": {
+      "phoenixId": "phoenix-1757790249456",
+      "componentName": "Skeleton",
+      "filePath": "src/components/ui/skeleton.tsx",
+      "lineNumber": 3,
+      "columnNumber": 0,
+      "sourceCode": "function Skeleton({\n  className,\n  ...props\n}: React.HTMLAttributes<HTMLDivElement>) {\n  return (\n    <div\n      className={cn(\"animate-pulse rounded-md bg-muted\", className)}\n      {...props}\n    />\n  )\n}",
+      "props": [
+        {
+          "name": "className",
+          "type": "unknown",
+          "required": false
+        }
+      ],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "complexity": "simple"
+      }
+    },
+    "phoenix-1757790249457": {
+      "phoenixId": "phoenix-1757790249457",
+      "componentName": "Toaster",
+      "filePath": "src/components/ui/toaster.tsx",
+      "lineNumber": 13,
+      "columnNumber": 7,
+      "sourceCode": "export function Toaster() {\n  const { toasts } = useToast()\n\n  return (\n    <ToastProvider>\n      {toasts.map(function ({ id, title, description, action, ...props }) {\n        return (\n          <Toast key={id} {...props}>\n            <div className=\"grid gap-1\">\n              {title && <ToastTitle>{title}</ToastTitle>}\n              {description && (\n                <ToastDescription>{description}</ToastDescription>\n              )}\n            </div>\n            {action}\n            <ToastClose />\n          </Toast>\n        )\n      })}\n      <ToastViewport />\n    </ToastProvider>\n  )\n}",
+      "props": [],
+      "imports": [],
+      "modificationHints": [
+        "text-update",
+        "style-change"
+      ],
+      "astAnalysis": {
+        "componentType": "functional",
+        "hooks": [
+          "useToast"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "stats": {
+    "totalComponents": 16,
+    "totalFiles": 66,
+    "processingTimeMs": 382
+  }
+}
